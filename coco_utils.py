@@ -30,8 +30,6 @@ class CocoUtils(object):
 
             # if file exists but no bounding box
             if len(self.annotations[image_name]) == 0:
-                cur_imageinfo['height'] = imh
-                cur_imageinfo['width'] = imw
                 cur_annotation = {'segmentation': None, 'iscrowd': None}
                 cur_annotation['image_id'] = int(image_id)
                 cur_annotation['area'] = 0

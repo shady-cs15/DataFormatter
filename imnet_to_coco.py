@@ -1,12 +1,21 @@
 import os
 import json
+import argparse
+import constants
 from xml.etree import ElementTree as ET
 from coco_utils import CocoUtils
 
-# define annotation root dir
-annotation_root_dir = '/usr1/schakra1/datasets/IMAGENET_VID/Annotations/train'
-jpg_dir = '/usr1/schakra1/packages/Detectron.pytorch/data/imnet_vid/images/train'
-output_path = '/usr1/schakra1/packages/Detectron.pytorch/data/imnet_vid/annotations/train.json'
+
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--set', dest='set', default='train', type=str, help='train or val')
+    args = parser.parse_args()
+    return args
+
+
+annotation_root_dir = constants.annotation_root_dir
+jpg_dir = constants.jpg_dir
+output_path = constants.output_path
 
 
 def _get_class_id_from_code(code):
@@ -57,7 +66,7 @@ def _get_image_name(sub_root, vid, xml, train=True):
 
 
 # define custom load annotation function
-def load_annotations():
+def load_train_annotations():
     annotations = {}
     annotation_subroots = sorted(os.listdir(annotation_root_dir))
     for annotation_subroot in annotation_subroots:
@@ -75,6 +84,23 @@ def load_annotations():
     return annotations
 
 
+def load_val_annotations():
+    annotations = {}
+    annotation_subroot = annotation_root_dir
+    annotation_subroot_dir = os.path.join(annotation_root_dir, annotation_subroot)
+    vids = sorted(os.listdir(annotation_subroot_dir))
+    print;
+    for i, vid in enumerate(vids):
+        print '\033[F{0} | done: {1:.2f}%'.format(annotation_subroot, (i+1)*100./len(vids))
+        vid_dir = os.path.join(annotation_subroot_dir, vid)
+        xmls = sorted(os.listdir(vid_dir))
+        for xml in xmls:
+            xmlpath = os.path.join(vid_dir, xml)
+            data = _read_xml(xmlpath)
+            annotations[_get_image_name(annotation_subroot, vid, xml)] = data
+    return annotations
+
+
 # custom get id map function
 def get_id_map():
     classes = ['__background__',  # always index 0
@@ -87,19 +113,27 @@ def get_id_map():
            'tiger', 'train', 'turtle', 'watercraft',
            'whale', 'zebra']
     id_map = {}
-    for i in range(len(classes)):
+    for i in range(1, len(classes)): #ignore background
         id_map[i] = classes[i]
     return id_map
 
-annotations = load_annotations()
-#with open('annotations.json') as fp:
-#    annotations = json.load(fp)
 
-import pdb; pdb.set_trace();    
-id_map = get_id_map()
-ccutils = CocoUtils(jpg_dir, annotations, id_map)
-coco_annotations = ccutils.get_coco_annotations()
+def main():
+    args = parse_args()
+    if args.set == 'train':
+        annotations = load_train_annotations()
+    elif args.set == 'val':
+        annotations = load_val_annotations()
+    else:
+        raise NotImplementedError
 
-import pdb; pdb.set_trace();
-with open(output_path, 'w') as fp:
-    json.dump(coco_annotations, fp)
+    id_map = get_id_map()
+    ccutils = CocoUtils(jpg_dir, annotations, id_map)
+    coco_annotations = ccutils.get_coco_annotations()
+
+    with open(output_path, 'w') as fp:
+        json.dump(coco_annotations, fp)
+
+
+if __name__ == '__main__':
+    main()
