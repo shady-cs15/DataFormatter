@@ -30,7 +30,7 @@ class CocoUtils(object):
 
             # if file exists but no bounding box
             if len(self.annotations[image_name]) == 0:
-                cur_annotation = {'segmentation': None, 'iscrowd': None}
+                cur_annotation = {'segmentation': None, 'iscrowd': 0}
                 cur_annotation['image_id'] = int(image_id)
                 cur_annotation['area'] = 0
                 cur_annotation['bbox'] = []
@@ -38,7 +38,6 @@ class CocoUtils(object):
                 cur_annotation['id'] = -1
                 self.out_annotations.append(cur_annotation)
                 
-
             for cls_id, box, imh, imw in self.annotations[image_name]:
                 x, y, w, h = box
                 box = [float(x), float(y), float(w), float(h)]
@@ -46,7 +45,7 @@ class CocoUtils(object):
                     cur_imageinfo['height'] = imh
                 if 'width' not in cur_imageinfo:
                     cur_imageinfo['width'] = imw
-                cur_annotation = {'segmentation': None, 'iscrowd': None}
+                cur_annotation = {'segmentation': None, 'iscrowd': 0}
                 cur_annotation['image_id'] = int(image_id)
                 cur_annotation['area'] = float(h*w)
                 cur_annotation['bbox'] = box

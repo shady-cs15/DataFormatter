@@ -58,9 +58,10 @@ def _read_xml(xml):
 def _get_image_name(sub_root, vid, xml, train=True):
     if train:
         prefix = 'train_'
+        image_name = prefix + sub_root + '_' + vid + '_'
     else:
         prefix = 'val_'
-    image_name = prefix + sub_root + '_' + vid + '_'
+        image_name = prefix + vid + '_'
     image_name += xml.split('.')[0]+'.jpg'
     return image_name
 
@@ -74,7 +75,7 @@ def load_train_annotations():
         annotation_subroot_dir = os.path.join(annotation_root_dir, annotation_subroot)
         vids = sorted(os.listdir(annotation_subroot_dir))
         for i, vid in enumerate(vids):
-            print '\033[F{0} | done: {1:.2f}%'.format(annotation_subroot, (i+1)*100./len(vids))
+            #print '\033[F{0} | done: {1:.2f}%'.format(annotation_subroot, (i+1)*100./len(vids))
             vid_dir = os.path.join(annotation_subroot_dir, vid)
             xmls = sorted(os.listdir(vid_dir))
             for xml in xmls:
@@ -97,7 +98,7 @@ def load_val_annotations():
         for xml in xmls:
             xmlpath = os.path.join(vid_dir, xml)
             data = _read_xml(xmlpath)
-            annotations[_get_image_name(annotation_subroot, vid, xml)] = data
+            annotations[_get_image_name(None, vid, xml, False)] = data
     return annotations
 
 
