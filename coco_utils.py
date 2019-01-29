@@ -16,7 +16,7 @@ class CocoUtils(object):
         bbox_id = 0; print;
         for image_id, jpg in enumerate(jpgs):
             image_name = jpg
-            print '\033[Fdone: {0:.2f} %'.format((image_id+1)*100./len(jpgs))
+            print('\033[Fdone: {0:.2f} %'.format((image_id+1)*100./len(jpgs)))
             
             cur_imageinfo = {'license': None, 'coco_url': None,\
                                 'flickr_url': None, 'date_captured': None}
