@@ -46,6 +46,9 @@ def _read_ann_file(ann_file, height, width):
             box = data[1: 5]
             for i in range(4): 
                 box[i] = int(box[i])
+            #convert to x, y, w, h form
+            box[2] = box[2] - box[0]
+            box[3] = box[3] - box[1]
             if f_id not in anns:
                 anns[f_id] = [[cls_id, box, height, width]]
             else:
