@@ -47,6 +47,7 @@ def _read_ann_file(ann_file, height, width):
             for i in range(4): 
                 box[i] = int(box[i])
             #convert to x, y, w, h form
+            assert box[2]>box[0] and box[3] > box[1]
             box[2] = box[2] - box[0]
             box[3] = box[3] - box[1]
             if f_id not in anns:
