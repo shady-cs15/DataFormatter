@@ -13,7 +13,8 @@ class CocoUtils(object):
 
     def _load_annotations(self):
         jpgs = sorted(os.listdir(self.jpg_dir))
-        bbox_id = 0; print;
+        bbox_id = 0 
+        print;
         for image_id, jpg in enumerate(jpgs):
             image_name = jpg
             print('\033[Fdone: {0:.2f} %'.format((image_id+1)*100./len(jpgs)))

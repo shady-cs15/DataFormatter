@@ -95,7 +95,6 @@ def main():
 
     annotations = load_annotations()
     id_map = get_id_map()
-    import pdb; pdb.set_trace();
 
     ccutils = CocoUtils(jpg_dir, annotations, id_map)
     coco_annotations = ccutils.get_coco_annotations()
